@@ -1,0 +1,99 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+v
+/* Character Grid */
+
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 equal-width columns */
+    grid-template-rows: repeat(3, 1fr);
+    /* 3 equal-height rows */
+    gap: 15px;
+    padding: 20px;
+    max-height: 100vh;
+    /* Limit the grid height for scrolling */
+    overflow-y: auto;
+    /* Vertical scroll if content overflows */
+}
+
+
+/* Styling for Character Cards */
+
+.character-card {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* Space between image and name */
+    height: 180px;
+    /* Height for consistency */
+    overflow: hidden;
+}
+
+.character-card img {
+    width: 100%;
+    border-radius: 8px 8px 0 0;
+    height: 120px;
+    /* Fixed height for images */
+    object-fit: cover;
+    /* Ensure image covers the area */
+}
+
+.character-card h3 {
+    font-size: 1rem;
+    margin-top: 10px;
+    text-transform: capitalize;
+    /* Capitalize names for style */
+    margin-bottom: 0;
+    font-weight: bold;
+}
+
+
+/* Details View */
+
+.character-details {
+    display: none;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.character-info img {
+    width: 50%;
+    border-radius: 10px;
+}
+
+#movieTrailer {
+    margin-top: 20px;
+}
+
+#movieTrailer iframe {
+    width: 100%;
+    height: 400px;
+    display: none;
+}
+
+
+/* Button styles */
+
+#movieTrailerButton,
+#backButton {
+    background-color: #ffcc00;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#movieTrailerButton:hover,
+#backButton:hover {
+    background-color: #ffa500;
+}

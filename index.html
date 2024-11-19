@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Wars Character Viewer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Star Wars Characters</h1>
+        <input type="text" id="searchInput" placeholder="Search for a character">
+        <button id="searchButton">Search</button>
+    </header>
+
+    <!-- Character list grid -->
+    <div id="loadingIndicator" class="loading-indicator">Loading characters...</div>
+    <div id="character-list" class="character-grid" style="display: none;">
+        <!-- Characters will be loaded here dynamically -->
+    </div>
+
+    <!-- Character Details -->
+    <!-- Character Details -->
+    <div id="character-details" class="character-details">
+        <button id="backButton"><--- Back</button>
+        <div class="character-info" style="display: flex; justify-content: space-between; align-items: center; padding: 20px;">
+            <!-- Left half (Character Image) -->
+            <div style="flex: 1; text-align: center;">
+                <img id="characterImage" src="" alt="Character Image" style="width: 80%; border-radius: 10px;">
+            </div>
+
+            <!-- Right half (Description) -->
+            <div style="flex: 1; text-align: left; padding-left: 20px;">
+                <h2 id="characterName"></h2>
+                <p id="characterDescription"></p>
+                <div id="characterExtraInfo"></div>
+
+                <div id="movieTrailer">
+                    <button id="movieTrailerButton">🎬 Movie Trailer</button>
+                    <iframe id="trailerIframe" width="560" height="315" src="" frameborder="0" allowfullscreen style="display: none;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="mySketch.js"></script>
+</body>
+
+</html>
