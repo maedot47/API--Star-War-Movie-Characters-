@@ -4,96 +4,164 @@ body {
     padding: 0;
 }
 
-v
-/* Character Grid */
+
+/* General Styles */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    background-color: #282828;
+    color: #ffcc00;
+}
+
+input[type="text"] {
+    padding: 10px;
+    margin-right: 10px;
+    width: 300px;
+    border: 2px solid #ffcc00;
+    background-color: #333;
+    color: white;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #ffcc00;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #ffa500;
+}
+
+
+/* Character List */
 
 .character-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    /* 3 equal-width columns */
-    grid-template-rows: repeat(3, 1fr);
-    /* 3 equal-height rows */
-    gap: 15px;
+    gap: 20px;
     padding: 20px;
-    max-height: 100vh;
-    /* Limit the grid height for scrolling */
+    max-height: 80vh;
     overflow-y: auto;
-    /* Vertical scroll if content overflows */
 }
 
 
-/* Styling for Character Cards */
+/* Character Card */
 
 .character-card {
-    background-color: rgba(0, 0, 0, 0.6);
-    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 15px;
     text-align: center;
     border-radius: 8px;
     cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    /* Space between image and name */
-    height: 180px;
-    /* Height for consistency */
-    overflow: hidden;
+    transition: background-color 0.3s ease;
 }
 
-.character-card img {
-    width: 100%;
-    border-radius: 8px 8px 0 0;
-    height: 120px;
-    /* Fixed height for images */
-    object-fit: cover;
-    /* Ensure image covers the area */
-}
-
-.character-card h3 {
-    font-size: 1rem;
-    margin-top: 10px;
-    text-transform: capitalize;
-    /* Capitalize names for style */
-    margin-bottom: 0;
-    font-weight: bold;
+.character-card:hover {
+    background-color: rgba(255, 204, 0, 0.8);
 }
 
 
-/* Details View */
+/* Character Details */
 
 .character-details {
     display: none;
-    text-align: center;
-    margin-top: 20px;
+    padding: 20px;
+    background-color: #282828;
+    border-radius: 10px;
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
-.character-info img {
-    width: 50%;
-    border-radius: 10px;
+.character-info-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 }
+
+
+/* Character Image */
+
+.character-image {
+    width: 250px;
+    height: 250px;
+    border-radius: 10px;
+    object-fit: cover;
+    /* Ensure the image fits within the container without distortion */
+    border: 2px solid #ffcc00;
+}
+
+.character-description {
+    width: 50%;
+    padding-left: 20px;
+}
+
+.character-details h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.character-details p {
+    font-size: 1.2rem;
+    margin: 5px 0;
+}
+
+.character-details #backButton {
+    position: absolute;
+    top: 25%;
+    left: 20%;
+    transform: translate(-50%, -50%);
+    /* Centers the button */
+    padding: 10px 20px;
+    background-color: #ffcc00;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: black;
+    border-radius: 5px;
+}
+
+.character-details #backButton:hover {
+    background-color: #ffa500;
+}
+
+
+/* Loading Indicator */
+
+.loading-indicator {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2rem;
+    color: #ffcc00;
+}
+
+
+/* Trailer Section */
 
 #movieTrailer {
     margin-top: 20px;
 }
 
-#movieTrailer iframe {
-    width: 100%;
-    height: 400px;
+iframe {
     display: none;
+    width: 100%;
+    height: 315px;
+    margin-top: 20px;
 }
 
-
-/* Button styles */
-
-#movieTrailerButton,
-#backButton {
-    background-color: #ffcc00;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-#movieTrailerButton:hover,
-#backButton:hover {
-    background-color: #ffa500;
+#trailerError {
+    color: red;
+    font-size: 1.2rem;
+    margin-top: 10px;
 }

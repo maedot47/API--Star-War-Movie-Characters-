@@ -11,103 +11,150 @@ document.addEventListener('DOMContentLoaded', async() => {
     const characterDescription = document.getElementById('characterDescription');
     const characterExtraInfo = document.getElementById('characterExtraInfo');
     const loadingIndicator = document.getElementById('loadingIndicator');
+    const trailerError = document.getElementById('trailerError');
 
     let characters = [];
-    let filteredCharacters = [];
 
-    // Fetch character data from the Star Wars API
+    // Fetch character data from SWAPI (real-time data)
     try {
         const response = await fetch('https://swapi.dev/api/people/');
         const data = await response.json();
-        characters = data.results;
-
-        // Hide the loading indicator and display the character list
+        characters = data.results.slice(0, 10); // Limit to top 10 characters
         loadingIndicator.style.display = 'none';
-        characterList.style.display = 'grid'; // Show the character list
-
-        renderCharacterList(characters); // Initially render all characters
+        characterList.style.display = 'grid';
+        renderCharacterList(characters);
     } catch (error) {
-        console.error('Error fetching data:', error);
         loadingIndicator.textContent = 'Failed to load characters. Please try again later.';
+        console.error('Error fetching characters:', error);
     }
 
-    // Render the character list using rectangles
+    // Fetch character images from an external source
+    async function fetchCharacterImage(characterName) {
+        const imageUrl = await getCharacterImageFromAPI(characterName);
+        return imageUrl || 'https://via.placeholder.com/150'; // Default image if none found
+    }
+
+    // Fetch exact movie character images based on name
+    async function getCharacterImageFromAPI(characterName) {
+        const imageUrls = {
+            'Luke Skywalker': 'https://lumiere-a.akamaihd.net/v1/images/luke-skywalker-main_7ffe21c7.jpeg?region=130%2C147%2C1417%2C796',
+            'Darth Vader': 'https://upload.wikimedia.org/wikipedia/en/f/f7/Darth_Vader.png',
+            'Leia Organa': 'https://en.wikipedia.org/wiki/File:Princess_Leia%27s_characteristic_hairstyle.jpg',
+            'C-3PO': 'https://lumiere-a.akamaihd.net/v1/images/c-3po-9-retina_6313ab74_1a198c83.jpeg?region=0%2C0%2C1200%2C800',
+            'R2-D2': 'https://upload.wikimedia.org/wikipedia/en/3/39/R2-D2_Droid.png',
+            'Obi-Wan Kenobi': 'https://upload.wikimedia.org/wikipedia/en/thumb/3/32/Ben_Kenobi.png/220px-Ben_Kenobi.png',
+            'Beru Whitesun lars': 'https://upload.wikimedia.org/wikipedia/en/1/1a/Shelagh_Fraser.jpg',
+            'R5-D4': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/R2-D2_-_Genuine_Movie_Star.jpg/800px-R2-D2_-_Genuine_Movie_Star.jpg'
+
+        };
+
+        return imageUrls[characterName] || 'https://via.placeholder.com/150'; // Default if no image found
+    }
+
+
+    // Render the character list dynamically
     function renderCharacterList(charactersToRender) {
-        characterList.innerHTML = ''; // Clear the character list
+        characterList.innerHTML = '';
         charactersToRender.forEach(character => {
             const card = document.createElement('div');
             card.classList.add('character-card');
-            card.innerHTML = `
-                <div class="rectangle" style="width: 150px; height: 150px; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; border-radius: 8px; cursor: pointer;">
-                    <h3 style="color: white; font-size: 1.2rem; text-align: center; text-transform: capitalize;">${character.name}</h3>
-                </div>
-            `;
+            card.innerHTML = `<h3>${character.name}</h3>`;
             card.addEventListener('click', () => showCharacterDetails(character));
             characterList.appendChild(card);
         });
     }
-    // Show character details with more information
-    function showCharacterDetails(character) {
-        // Hide the character list and show character details screen
+
+    // Show character details dynamically
+    async function showCharacterDetails(character) {
         characterDetails.style.display = 'block';
         characterList.style.display = 'none';
-
-        // Populate character details
         characterName.textContent = character.name;
-        characterImage.src = "https://via.placeholder.com/150"; // You can replace this with an actual image URL if you want
 
-        // Character description (basic info from the API)
+        // Fetch the character image dynamically
+        const imageUrl = await fetchCharacterImage(character.name);
+        characterImage.src = imageUrl;
+
+        // Display character description dynamically from SWAPI
         characterDescription.innerHTML = `
-            <strong>Gender:</strong> ${character.gender}<br>
+            <strong>Gender:</strong> ${character.gender || 'n/a'}<br>
             <strong>Height:</strong> ${character.height} cm<br>
-            <strong>Hair Color:</strong> ${character.hair_color}<br>
-            <strong>Skin Color:</strong> ${character.skin_color}<br>
+            <strong>Hair Color:</strong> ${character.hair_color || 'n/a'}<br>
+            <strong>Skin Color:</strong> ${character.skin_color || 'n/a'}<br>
+            <strong>Birth Year:</strong> ${character.birth_year || 'n/a'}<br>
         `;
 
-        // Additional character info (what they did, their role, etc.)
+        // Display homeworld (planet) info
+        const homeworldUrl = character.homeworld;
+        const homeworldName = await fetchHomeworld(homeworldUrl);
         characterExtraInfo.innerHTML = `
-            <strong>Role in Star Wars:</strong> ${getCharacterRole(character.name)}<br>
+            <strong>Homeworld:</strong> ${homeworldName}<br>
+            <strong>Role in Star Wars:</strong> ${getCharacterRole(character.name)}
         `;
 
-        // Movie trailer button click functionality
-        movieTrailerButton.addEventListener('click', () => {
-            trailerIframe.style.display = 'block';
-            trailerIframe.src = "https://www.youtube.com/embed/VIDEO_ID"; // Replace with actual trailer URL
-        });
+        // Hide the trailer iframe initially
+        trailerIframe.style.display = 'none';
+        trailerIframe.src = '';
+        trailerError.style.display = 'none';
     }
-    // Function to simulate character role in the Star Wars movies (you can add more logic here)
-    function getCharacterRole(characterName) {
-        const roles = {
-            "Luke Skywalker": "Jedi Knight, Rebel Leader, Son of Anakin Skywalker.",
-            "Darth Vader": "Former Jedi Knight, Sith Lord, Father of Luke Skywalker.",
-            "Leia Organa": "Princess of Alderaan, Rebel Leader, Sister to Luke Skywalker.",
-            "Han Solo": "Smuggler, Rebel Leader, Pilot of the Millennium Falcon.",
-            // Add more roles here based on the character's name.
-        };
 
-        return roles[characterName] || "No role information available";
+    // Fetch the homeworld name from SWAPI
+    async function fetchHomeworld(url) {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            return data.name || 'Unknown'; // Return homeworld name or "Unknown" if not available
+        } catch (error) {
+            console.error('Error fetching homeworld:', error);
+            return 'Unknown';
+        }
     }
 
     // Back button functionality
     backButton.addEventListener('click', () => {
-        // Hide character details and show character list again
         characterDetails.style.display = 'none';
-        characterList.style.display = 'grid'; // Ensure the character list displays in grid format
-
-        // Clear the trailer iframe
-        trailerIframe.style.display = 'none';
-        trailerIframe.src = "";
+        characterList.style.display = 'grid'; // Show character list again
+        trailerIframe.style.display = 'none'; // Hide trailer iframe
+        trailerIframe.src = ''; // Reset iframe source
     });
 
     // Search button functionality
     searchButton.addEventListener('click', () => {
         const query = searchInput.value.toLowerCase();
-        filteredCharacters = characters.filter(character => character.name.toLowerCase().includes(query));
+        const filteredCharacters = characters.filter(character =>
+            character.name.toLowerCase().includes(query)
+        );
 
         if (filteredCharacters.length > 0) {
-            renderCharacterList(filteredCharacters); // Render only the filtered characters
+            renderCharacterList(filteredCharacters);
         } else {
-            characterList.innerHTML = `<p>No results found</p>`; // Display "No results" if no match is found
+            characterList.innerHTML = `<p>No results found</p>`; // Display message if no results
         }
     });
+
+    // Movie trailer button functionality
+    movieTrailerButton.addEventListener('click', () => {
+        const trailerUrl = "https://www.youtube.com/embed/dQw4w9WgXcQ"; // Placeholder trailer link
+
+        trailerIframe.style.display = 'block'; // Show iframe
+        trailerIframe.src = trailerUrl; // Set iframe src to the YouTube link
+
+        // Simulate YouTube-like behavior
+        try {
+            const isValid = isValidYouTubeUrl(trailerUrl);
+            if (!isValid) {
+                throw new Error('Invalid YouTube link');
+            }
+            trailerError.style.display = 'none'; // Hide error if valid
+        } catch (error) {
+            trailerIframe.style.display = 'none'; // Hide iframe
+            trailerError.style.display = 'block'; // Show error message
+            trailerError.textContent = "Error loading trailer. Please try again.";
+        }
+    });
+
+    // Helper function to validate YouTube URL
+    function isValidYouTubeUrl(url) {
+        const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube|youtu)\.(com|be)\/(watch\?v=|embed\/)[\w-]+$/;
+        return youtubeRegex.test(url);
+    }
 });
